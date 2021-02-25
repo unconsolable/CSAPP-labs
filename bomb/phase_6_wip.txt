@@ -1,0 +1,81 @@
+void phase_6(%rdi)
+{
+    %rsp -= 50
+    $rsi = $rsp
+    // $rsp|$rsp+4|$rsp+8|%rsp+c|%rsp+10|$rsp+14
+    // 为6个数位置
+    read_six_numbers($rdi, $rsi);
+    $r14 = $rsp
+    $r13 = $rsp
+    // 数组数字<=6并且数字之间互不相等
+    for ($r12d = 0; $r12d != 6;$r12d++)
+        $rbp = $r13
+        $eax = M[$r13]
+        $eax -= 1
+        if ($eax > 5)
+            explode_bomb()
+        $ebx = $e12d
+        for ($ebx = $e12d; $ebx <= 5; ++$ebx)
+            $rax = M[$rsp + $ebx * 4]
+            if ($rax == M[$rbp])
+                explode_bomb();
+        $r13 += 4
+    // 数组元素关于7的对称
+    for ($rax = $rsp; $rax != $rsp + 18; $rax += 4)
+        M[$rax] = 0x7 - M[$rax]
+    
+    $esi = 0
+    while ($esi != 0x18)
+    {
+        $ecx = M[$rsp + $rsi * 1]
+        if ($ecx <= 1)
+        {
+            $edx = 0x6032d0
+        }
+        else
+        {
+            $eax = 1
+            $edx = 0x6032d0
+            do 
+            {
+                $rdx = M[$rdx + 8]
+                $eax++
+            }
+            while ($ecx != $eax)
+        }
+        // 根据$ecx次数取对应地址，赋值
+        // 6次，填充后续0x30
+        M[0x20 + $rsp + 2 * $rsi] = $rdx
+        $rsi += 4
+    }
+
+    
+    $rax = $rsp + 0x28
+    $rsi = $rsp + 0x50
+    $rcx = M[$rsp + 0x20]
+    // | $rsp + 0x20 | $rsp + 0x28 | $rsp + 0x30 |
+    // | $rsp + 0x38 | $rsp + 0x40 | %rsp + 0x48 |
+    // 内容为0x603xxx
+    while ($rax != $rsi)
+    {   
+        $rdx = M[$rax]
+        M[0x8 + $rcx] = $rdx = M[$rax]
+        $rax += 8
+        $rcx = $rdx
+    }
+    // 得到公式M[M[0]+0x8]=M[1]
+
+    M[$rdx + 0x8] = 0x0 
+    $rbx = M[$rsp + 0x20]
+    $ebp = 5
+    while ($ebp != 0)
+    {
+        // 根据公式发现是降序
+        $rax = M[0x8 + %rbx]
+        if (M[$rax] > M[$rbx])
+            explode_bomb()
+        $rbx = M[$rbx + 0x8]
+        $ebp -= 1
+    }
+    
+}
